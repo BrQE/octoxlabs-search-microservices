@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "logger_service"
+version = "1.0.0"
+description = "Service to log search queries and store them in Elasticsearch"
+authors = ["Burak Ece <burakece9191@hotmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+python-dotenv = "^1.0.0" 
+fastapi = "^0.109.1"
+uvicorn = "^0.27.0"
+pydantic-settings = "^2.0.3"
+pika = "^1.2.0"
+elasticsearch = "^8.11.0"
