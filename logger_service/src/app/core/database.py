@@ -5,7 +5,7 @@ from .config import ElasticsearchSettings
 def get_elasticsearch_client():
     """Get an Elasticsearch client"""
     settings = ElasticsearchSettings()
-    es_client = Elasticsearch(settings.SERVER, basic_auth=(settings.USER, settings.PASSWORD))
+    es_client = Elasticsearch(settings.ES_SERVER, basic_auth=(settings.ES_USER, settings.ES_PASSWORD))
 
     try:
         yield es_client

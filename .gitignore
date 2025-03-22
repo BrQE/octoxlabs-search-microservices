@@ -85,3 +85,6 @@ logs/
 *.pid
 *.seed
 *.pid.lock 
+
+query_converter/.env
+logger_service/.env

@@ -91,9 +91,9 @@ def create_application(
 
 def create_index(settings: ElasticsearchSettings):
     """Create an Elasticsearch index if it doesn't exist"""
-    es = Elasticsearch(f"{settings.HOST}", basic_auth=(settings.USER, settings.PASSWORD))
+    es = Elasticsearch(f"{settings.ES_SERVER}", basic_auth=(settings.ES_USER, settings.ES_PASSWORD))
     
-    if not es.indices.exists(index=settings.LOG_INDEX_NAME):
-        es.indices.create(index=settings.LOG_INDEX_NAME, mappings=settings.LOG_INDEX_MAPPINGS)
+    if not es.indices.exists(index=settings.ES_LOG_INDEX_NAME):
+        es.indices.create(index=settings.ES_LOG_INDEX_NAME, mappings=settings.ES_LOG_INDEX_MAPPINGS)
     
     return es

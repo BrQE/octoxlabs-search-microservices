@@ -19,12 +19,12 @@ class AppSettings(BaseSettings):
 
 
 class ElasticsearchSettings(BaseSettings):
-    SERVER: str = config.get("ELASTICSEARCH_SERVER", default="http://localhost:9200")
-    USER: str = config.get("ELASTICSEARCH_USER", default="elastic")
-    PASSWORD: str = config.get("ELASTICSEARCH_PASSWORD", default="elastic")
+    ES_SERVER: str = config.get("ES_SERVER", default="http://localhost:9200")
+    ES_USER: str = config.get("ES_USER", default="elastic")
+    ES_PASSWORD: str = config.get("ES_PASSWORD", default="elastic")
 
-    LOG_INDEX_NAME: str = "search_query_logs"
-    LOG_INDEX_MAPPINGS: dict = {
+    ES_LOG_INDEX_NAME: str = "search_query_logs"
+    ES_LOG_INDEX_MAPPINGS: dict = {
         "properties": {
             "ip": {"type": "keyword"},
             "username": {"type": "keyword"},
@@ -35,8 +35,12 @@ class ElasticsearchSettings(BaseSettings):
 
 
 class RabbitMQSettings(BaseSettings):
-    HOST: str = config.get("RABBITMQ_HOST", default="localhost")
-    QUEUE_NAME: str = config.get("RABBITMQ_QUEUE_NAME", default="search_query_queue")
+    RABBITMQ_HOST: str = config.get("RABBITMQ_HOST", default="rabbitmq")
+    RABBITMQ_PORT: int = config.get("RABBITMQ_PORT", default=5672)
+    RABBITMQ_USER: str = config.get("RABBITMQ_USER", default="guest")
+    RABBITMQ_PASSWORD: str = config.get("RABBITMQ_PASSWORD", default="guest")
+    RABBITMQ_VHOST: str = config.get("RABBITMQ_VHOST", default="/")
+    RABBITMQ_QUEUE_NAME: str = "search_query_queue"
 
 
 class TestSettings(BaseSettings):

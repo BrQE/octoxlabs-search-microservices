@@ -1,7 +1,7 @@
 import pika
 import time
 
-from ..core.config import RabbitMQSettings
+from ..core.config import settings
 from ..core.logger import logging
 from .transmitter import Transmitter
 
@@ -27,7 +27,7 @@ class Receiver:
                 raise Exception("Failed to create channel")
             
             self.channel.basic_consume(
-                queue=RabbitMQSettings.QUEUE_NAME,
+                queue=settings.RABBITMQ_QUEUE_NAME,
                 on_message_callback=self.transmitter.send_to_elasticsearch
             )
 
@@ -49,9 +49,15 @@ class Receiver:
     def create_connection(self):
         for _ in range(3):
             try:
+                credentials = pika.PlainCredentials(
+                    username=settings.RABBITMQ_USER,
+                    password=settings.RABBITMQ_PASSWORD
+                )
                 rabbit_params = pika.ConnectionParameters(
-                    host=RabbitMQSettings.HOST,
-                    port=RabbitMQSettings.PORT
+                    host=settings.RABBITMQ_HOST,
+                    port=settings.RABBITMQ_PORT,
+                    virtual_host=settings.RABBITMQ_VHOST,
+                    credentials=credentials
                 )
                 connection = pika.BlockingConnection(rabbit_params)
                 return connection
@@ -65,7 +71,7 @@ class Receiver:
         for _ in range(3):
             try:
                 channel = self.connection.channel()
-                channel.queue_declare(queue=RabbitMQSettings.QUEUE_NAME)
+                channel.queue_declare(queue=settings.RABBITMQ_QUEUE_NAME)
                 return channel
             except Exception as e:
                 logger.error(f"Failed to create channel: {str(e)}")

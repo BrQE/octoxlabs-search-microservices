@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 
-from ..core.config import ElasticsearchSettings
+from ..core.config import settings
 from ..core.database import get_elasticsearch_client
 from ..core.logger import logging
 
@@ -23,10 +23,11 @@ class Transmitter:
             
             # Store in Elasticsearch
             self.es.index(
-                index=ElasticsearchSettings.LOG_INDEX,
+                index=settings.ES_LOG_INDEX_NAME,
                 body={
-                    "query": message['query'],
+                    "ip": message['ip'],
                     "username": message['username'],
+                    "query": message['query'],
                     "timestamp": datetime.now().isoformat()
                 }
             )

@@ -14,12 +14,12 @@ done
 
 # Apply database migrations
 echo "Applying database migrations..."
-poetry run python manage.py migrate
+poetry run python src/manage.py migrate
 
 # Load dummy data into Elasticsearch
 echo "Loading dummy data into Elasticsearch..."
-poetry run python manage.py load_dummy_data
+poetry run python src/manage.py load_dummy_data
 
 # Start server
 echo "Starting server..."
-poetry run python manage.py runserver 0.0.0.0:8000 
+poetry run python src/manage.py runserver 0.0.0.0:8000 
