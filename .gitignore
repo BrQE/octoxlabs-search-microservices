@@ -88,3 +88,4 @@ logs/
 
 query_converter/.env
 logger_service/.env
+query_converter/src/app/api/v1/__pycache__/query_route.cpython-311.pyc

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
+from loguru import logger
 
 from ...schemas.query_schema import QueryRequest, QueryResponse
 from ...services.converter_service import ConverterService
@@ -27,7 +28,9 @@ async def convert(
     - Converted Elasticsearch query
     """
     try:
+        logger.info(f"Received query: {request.query}") 
         es_query = converter_service.convert_query(request.query)
+        logger.debug(f"Converted query: {es_query}")
         return QueryResponse(query=es_query)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Query conversion failed: {str(e)}")

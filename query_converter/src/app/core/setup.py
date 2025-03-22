@@ -1,16 +1,17 @@
- 
 from typing import Any
  
 import fastapi
 from fastapi import APIRouter, FastAPI
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 from fastapi.openapi.utils import get_openapi
+from loguru import logger
 
 from .config import (
     AppSettings,
     EnvironmentOption,
     EnvironmentSettings
 )
+from .logging import setup_logging
 
 def create_application(
     router: APIRouter,
@@ -51,6 +52,10 @@ def create_application(
     for caching, queue, and rate limiting, client-side caching, and customizing the API documentation
     based on the environment settings.
     """
+    # Setup logging first
+    setup_logging()
+    logger.info("Initializing FastAPI application")
+
     # --- before creating application ---
     if isinstance(settings, AppSettings):
         to_update = {
@@ -66,9 +71,11 @@ def create_application(
  
     application = FastAPI(**kwargs)
     application.include_router(router)
+    logger.info("Router included in application")
 
     if isinstance(settings, EnvironmentSettings):
         if settings.ENVIRONMENT != EnvironmentOption.PRODUCTION:
+            logger.info("Setting up documentation routes for non-production environment")
             docs_router = APIRouter()
 
             @docs_router.get("/docs", include_in_schema=False)
@@ -85,5 +92,6 @@ def create_application(
                 return out
 
             application.include_router(docs_router)
+            logger.info("Documentation routes added")
 
         return application

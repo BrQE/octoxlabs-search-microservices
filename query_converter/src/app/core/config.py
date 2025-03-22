@@ -16,6 +16,16 @@ class AppSettings(BaseSettings):
     LICENSE_NAME: str | None = config("LICENSE", default=None)
     CONTACT_NAME: str | None = config("CONTACT_NAME", default=None)
     CONTACT_EMAIL: str | None = config("CONTACT_EMAIL", default=None)
+    
+    # Logging settings
+    LOG_LEVEL: str = config.get("LOG_LEVEL", default="INFO")
+    LOG_FORMAT: str = (
+        "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | "
+        "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"
+    )
+    LOG_FILE: str = config.get("LOG_FILE", default="logs/error.log")
+    LOG_ROTATION: str = config.get("LOG_ROTATION", default="500 MB")
+    LOG_RETENTION: str = config.get("LOG_RETENTION", default="10 days")
 
 
 class TestSettings(BaseSettings):
