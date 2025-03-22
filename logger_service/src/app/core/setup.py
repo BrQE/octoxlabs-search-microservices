@@ -6,12 +6,14 @@ from fastapi import APIRouter, FastAPI
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 from fastapi.openapi.utils import get_openapi
 from elasticsearch import Elasticsearch
+from loguru import logger
 from .config import (
     AppSettings,
     EnvironmentOption,
     EnvironmentSettings,
     ElasticsearchSettings
 )
+from .logging import setup_logging
 
 def create_application(
     router: APIRouter,
@@ -52,6 +54,10 @@ def create_application(
     for caching, queue, and rate limiting, client-side caching, and customizing the API documentation
     based on the environment settings.
     """
+    # Setup logging first
+    setup_logging()
+    logger.info("Initializing FastAPI application")
+
     # --- before creating application ---
     if isinstance(settings, AppSettings):
         to_update = {

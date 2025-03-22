@@ -42,6 +42,16 @@ class RabbitMQSettings(BaseSettings):
     RABBITMQ_VHOST: str = config.get("RABBITMQ_VHOST", default="/")
     RABBITMQ_QUEUE_NAME: str = "search_query_queue"
 
+    # Logging settings
+    LOG_LEVEL: str = config.get("LOG_LEVEL", default="INFO")
+    LOG_FORMAT: str = (
+        "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | "
+        "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"
+    )
+    LOG_FILE: str = config.get("LOG_FILE", default="logs/error.log")
+    LOG_ROTATION: str = config.get("LOG_ROTATION", default="500 MB")
+    LOG_RETENTION: str = config.get("LOG_RETENTION", default="10 days")
+
 
 class TestSettings(BaseSettings):
     ...

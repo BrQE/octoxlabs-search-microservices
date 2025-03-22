@@ -1,8 +1,7 @@
 from elasticsearch import Elasticsearch
 from .config import settings
-from .logger import logging
+from loguru import logger
 
-logger = logging.getLogger(__name__)
 
 def get_elasticsearch_client():
     """Get an Elasticsearch client""" 
