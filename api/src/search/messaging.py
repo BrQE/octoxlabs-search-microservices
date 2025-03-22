@@ -65,7 +65,7 @@ def log_search_query(func):
         
         try:
             client.publish_message(
-                routing_key='search.query.received',
+                routing_key='search_query_queue',
                 message=log_data
             )
         except Exception as e:

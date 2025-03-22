@@ -71,7 +71,7 @@ class Receiver:
         for _ in range(3):
             try:
                 channel = self.connection.channel()
-                channel.queue_declare(queue=settings.RABBITMQ_QUEUE_NAME)
+                channel.queue_declare(queue=settings.RABBITMQ_QUEUE_NAME, durable=True)
                 return channel
             except Exception as e:
                 logger.error(f"Failed to create channel: {str(e)}")

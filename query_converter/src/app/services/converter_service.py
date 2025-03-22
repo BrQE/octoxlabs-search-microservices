@@ -24,7 +24,7 @@ class ConverterService:
         if '*' in value:
             return {
                 "wildcard": {
-                    f"{field}.keyword": value
+                    f"{field}": value
                 }
             }
         elif value.startswith('/') and value.endswith('/'):
@@ -32,13 +32,13 @@ class ConverterService:
             regex_pattern = value[1:-1]
             return {
                 "regexp": {
-                    f"{field}.keyword": regex_pattern
+                    f"{field}": regex_pattern
                 }
             }
         else:
             # Term query for exact match
             return {
                 "term": {
-                    f"{field}.keyword": value
+                    f"{field}": value
                 }
             }

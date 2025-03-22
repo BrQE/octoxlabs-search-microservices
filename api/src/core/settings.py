@@ -44,8 +44,9 @@ INSTALLED_APPS = [
     # Third party apps
     'rest_framework',
     'corsheaders',
+    'drf_yasg',
     # Local apps
-    'api',
+    'search',
 ]
 
 MIDDLEWARE = [
@@ -135,7 +136,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # REST Framework settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'api.authentication.OctoxlabsAuthentication',
+        'search.authentication.OctoxlabsAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',

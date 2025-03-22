@@ -2,16 +2,31 @@ import json
 import pika
 import requests
 import datetime
+import base64
 from django.conf import settings
 from elasticsearch import Elasticsearch
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 from .serializers import SearchQuerySerializer, SearchResultSerializer
 from .messaging import log_search_query
 
 
 class SearchView(APIView):
+    @swagger_auto_schema(
+        request_body=SearchQuerySerializer,
+        responses={
+            200: SearchResultSerializer(many=True),
+            400: "Bad Request",
+            500: "Internal Server Error",
+            503: "Service Unavailable",
+            401: "Unauthorized"
+        },
+        operation_description="Search for hosts using a query string",
+        operation_summary="Search hosts"
+    )
     @log_search_query
     def post(self, request):
         serializer = SearchQuerySerializer(data=request.data)
@@ -23,7 +38,7 @@ class SearchView(APIView):
         # Send query to converter service
         try:
             converter_response = requests.post(
-                settings.QUERY_CONVERTER_URL,
+                settings.QUERY_CONVERTER_SERVICE_URL,
                 json={'query': query}
             )
             

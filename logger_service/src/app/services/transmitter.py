@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 class Transmitter:
     def __init__(self):
         self.es = get_elasticsearch_client()
-
+        
     def send_to_elasticsearch(self, ch, method, properties, body):
         """Process incoming log messages"""
         try:

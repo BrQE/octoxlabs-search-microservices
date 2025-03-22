@@ -15,7 +15,7 @@ class OctoxlabsAuthentication(authentication.BaseAuthentication):
             username = base64.b64decode(token).decode('utf-8')
             
             try:
-                user = User.objects.get(username=username, defaults={'is_active': True})
+                user = User.objects.get(username=username)
             except User.DoesNotExist:
                 raise exceptions.AuthenticationFailed('Invalid authentication token')
                 
