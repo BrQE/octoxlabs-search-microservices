@@ -8,7 +8,7 @@ class ConverterService:
         Convert a simple query string to Elasticsearch query DSL
         
         Example:
-        "Hostname = octoxlabs*" -> {"wildcard": {"Hostname.keyword": "octoxlabs*"}}
+        "Hostname = octoxlabs*" -> {"wildcard": {"Hostname": "octoxlabs*"}}
         """
         # Simple parser for "field = value" format
         pattern = r'(\w+)\s*=\s*(.+)'
