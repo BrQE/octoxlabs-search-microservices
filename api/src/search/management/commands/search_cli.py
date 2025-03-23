@@ -15,7 +15,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         query = options['query']
         username = options['username']
-        User.objects.get_or_create(username=username, defaults={'is_active': True})
+        User.objects.get_or_create(username=username)
         
         # Create auth token
         auth_token = f"Octoxlabs {base64.b64encode(username.encode()).decode()}"    

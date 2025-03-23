@@ -14,6 +14,8 @@ ENV PATH="$POETRY_HOME/bin:$PATH"
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     curl \
+    libpq-dev \
+    gcc \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Poetry
@@ -26,7 +28,7 @@ WORKDIR /app
 COPY pyproject.toml poetry.lock ./
 
 # Install dependencies
-RUN poetry install --no-root --no-dev
+RUN poetry install --no-root
 
 # Copy project files
 COPY . .
@@ -36,7 +38,7 @@ COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
 # Run migrations and collect static files
-RUN poetry install --no-dev
+RUN poetry install
 
 # Expose port
 EXPOSE 8000
