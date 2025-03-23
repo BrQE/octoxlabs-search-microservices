@@ -11,7 +11,7 @@ from .config import (
     EnvironmentOption,
     EnvironmentSettings
 )
-from .logging import setup_logging
+from .logger import setup_logging
 
 def create_application(
     router: APIRouter,

@@ -1,4 +1,5 @@
 import json
+import time
 from datetime import datetime
 from loguru import logger
 
@@ -43,8 +44,10 @@ class Transmitter:
             logger.error(f"Failed to parse message as JSON: {str(e)}")
             logger.error(f"Raw message: {body}")
             ch.basic_nack(delivery_tag=method.delivery_tag, requeue=True)
+            time.sleep(5)
         except Exception as e:
             logger.exception(f"Error processing message: {str(e)}")
             logger.error(f"Message that caused error: {body}")
             # Negative acknowledgment to requeue the message
             ch.basic_nack(delivery_tag=method.delivery_tag, requeue=True)
+            time.sleep(5)

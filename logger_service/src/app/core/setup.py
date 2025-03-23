@@ -1,27 +1,27 @@
- 
 from typing import Any
- 
-import fastapi
 from fastapi import APIRouter, FastAPI
+from fastapi.responses import HTMLResponse
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 from fastapi.openapi.utils import get_openapi
-from elasticsearch import Elasticsearch
 from loguru import logger
+
+from .logger import setup_logging
+from .database import get_elasticsearch_client
 from .config import (
     AppSettings,
     EnvironmentOption,
     EnvironmentSettings,
     ElasticsearchSettings
 )
-from .logging import setup_logging
+
 
 def create_application(
-    router: APIRouter,
-    settings: (
-        AppSettings   
-        | EnvironmentSettings
-    ),
-    **kwargs: Any,
+        router: APIRouter,
+        settings: (
+                AppSettings
+                | EnvironmentSettings
+        ),
+        **kwargs: Any,
 ) -> FastAPI:
     """Creates and configures a FastAPI application based on the provided settings.
 
@@ -70,20 +70,22 @@ def create_application(
 
     if isinstance(settings, EnvironmentSettings):
         kwargs.update({"docs_url": None, "redoc_url": None, "openapi_url": None})
- 
+
     application = FastAPI(**kwargs)
     application.include_router(router)
+    logger.info("Router included in application")
 
     if isinstance(settings, EnvironmentSettings):
         if settings.ENVIRONMENT != EnvironmentOption.PRODUCTION:
+            logger.info("Setting up documentation routes for non-production environment")
             docs_router = APIRouter()
 
             @docs_router.get("/docs", include_in_schema=False)
-            async def get_swagger_documentation() -> fastapi.responses.HTMLResponse:
+            async def get_swagger_documentation() -> HTMLResponse:
                 return get_swagger_ui_html(openapi_url="/openapi.json", title="docs")
 
             @docs_router.get("/redoc", include_in_schema=False)
-            async def get_redoc_documentation() -> fastapi.responses.HTMLResponse:
+            async def get_redoc_documentation() -> HTMLResponse:
                 return get_redoc_html(openapi_url="/openapi.json", title="docs")
 
             @docs_router.get("/openapi.json", include_in_schema=False)
@@ -92,17 +94,16 @@ def create_application(
                 return out
 
             application.include_router(docs_router)
+            logger.info("Documentation routes added")
 
-        return application
+    return application
 
 def create_index(settings: ElasticsearchSettings):
     """Create an Elasticsearch index if it doesn't exist"""
-    es = Elasticsearch(
-        hosts=[settings.ES_SERVER],
-        basic_auth=(settings.ES_USER, settings.ES_PASSWORD)
-    )
-    
+    es = get_elasticsearch_client()
+    # Create index if it doesn't exist
     if not es.indices.exists(index=settings.ES_LOG_INDEX_NAME):
+        logger.info(f"Creating index '{settings.ES_LOG_INDEX_NAME}'...")
         es.indices.create(index=settings.ES_LOG_INDEX_NAME, mappings=settings.ES_LOG_INDEX_MAPPINGS)
-    
+        logger.info(f"Successfully created index '{settings.ES_LOG_INDEX_NAME}'")
     return es
