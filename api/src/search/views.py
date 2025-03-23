@@ -81,9 +81,17 @@ class SearchView(APIView):
             # Paginate results
             page = self.pagination.paginate_queryset(result_serializer.data, request)
             if page is not None:
-                return self.pagination.get_paginated_response(page)
+                response_data = {
+                    'total': len(result_serializer.data),
+                    'results': page
+                }
+                return Response(response_data)
 
-            return Response(result_serializer.data)
+            response_data = {
+                'total': len(result_serializer.data),
+                'results': result_serializer.data
+            }
+            return Response(response_data)
 
         except Exception as e:
             logger.error(f"Search failed: {str(e)}", exc_info=True)
