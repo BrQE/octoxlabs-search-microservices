@@ -1,6 +1,6 @@
 import pytest
 
-from src.app.services.converter_service import ConverterService
+from src.app.services.converter_service import ConverterService, QueryType
 
 
 class TestConverterService:
@@ -10,7 +10,7 @@ class TestConverterService:
     def test_convert_wildcard_query(self):
         query = "Hostname = octoxlabs*"
         expected = {
-            "wildcard": {
+            QueryType.WILDCARD: {
                 "Hostname": "octoxlabs*"
             }
         }
@@ -18,10 +18,10 @@ class TestConverterService:
         assert result == expected
 
     def test_convert_regex_query(self):
-        query = "Hostname = /octoxlabs.*/"
+        query = "Hostname = /octoxlabs./"
         expected = {
-            "regexp": {
-                "Hostname": "octoxlabs.*"
+            QueryType.REGEXP: {
+                "Hostname": "octoxlabs."
             }
         }
         result = self.converter.convert_query(query)
@@ -30,7 +30,7 @@ class TestConverterService:
     def test_convert_term_query(self):
         query = "Hostname = octoxlabs"
         expected = {
-            "term": {
+            QueryType.TERM: {
                 "Hostname": "octoxlabs"
             }
         }
@@ -40,7 +40,7 @@ class TestConverterService:
     def test_convert_query_with_spaces(self):
         query = "Hostname  =  octoxlabs"
         expected = {
-            "term": {
+            QueryType.TERM: {
                 "Hostname": "octoxlabs"
             }
         }
@@ -57,10 +57,36 @@ class TestConverterService:
         query = ""
         with pytest.raises(ValueError) as exc_info:
             self.converter.convert_query(query)
-        assert "Invalid query format" in str(exc_info.value)
+        assert "Query string must be a non-empty string" in str(exc_info.value)
 
     def test_query_without_equals(self):
         query = "Hostname octoxlabs"
         with pytest.raises(ValueError) as exc_info:
             self.converter.convert_query(query)
         assert "Invalid query format" in str(exc_info.value)
+
+    def test_non_string_query(self):
+        query = None
+        with pytest.raises(ValueError) as exc_info:
+            self.converter.convert_query(query)
+        assert "Query string must be a non-empty string" in str(exc_info.value)
+
+    def test_query_with_special_characters(self):
+        query = "IP = /192\.168\.1\./"
+        expected = {
+            QueryType.REGEXP: {
+                "IP": "192\.168\.1\.*"
+            }
+        }
+        result = self.converter.convert_query(query)
+        assert result == expected
+
+    def test_query_with_multiple_wildcards(self):
+        query = "Domain = *.example.*"
+        expected = {
+            QueryType.WILDCARD: {
+                "Domain": "*.example.*"
+            }
+        }
+        result = self.converter.convert_query(query)
+        assert result == expected
