@@ -109,7 +109,7 @@ docker-compose exec api python src/manage.py search_cli "Hostname = octoxlabs*" 
 To run unit tests:
 
 ```bash
-docker-compose exec api python manage.py test
+docker-compose exec api pytest src/search/tests.py -v
 ```
 
 ## Code Quality
