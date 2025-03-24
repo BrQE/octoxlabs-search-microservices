@@ -20,10 +20,35 @@ The project is a Docker composition consisting of the following services:
 
 ### Running the Project
 
+You can run the project in two ways:
+
+#### 1. Using dev_run.sh (Recommended)
+
 ```bash
 # Clone the project
-git clone https://github.com/yourusername/octoxlabs-case.git
-cd octoxlabs-case
+git clone https://github.com/BrQE/octoxlabs-search-microservices
+cd octoxlabs-search-microservices
+
+# Make the script executable
+chmod +x dev_run.sh
+
+# Run the development script
+./dev_run.sh
+```
+
+This script will:
+- Check and create necessary .env files from .env.example files
+- Stop any running containers
+- Start all services
+- Wait for all services to be ready
+- Test the search endpoint
+
+#### 2. Manual Setup
+
+```bash
+# Clone the project
+git clone https://github.com/BrQE/octoxlabs-search-microservices
+cd octoxlabs-search-microservices
 
 # Start services using Docker Compose
 docker-compose up -d
@@ -32,7 +57,7 @@ docker-compose up -d
 sleep 30
 
 # Create test user
-docker-compose exec api python manage.py createsuperuser --username octoAdmin --email admin@octoxlabs.com --noinput
+docker-compose exec api python src/manage.py createsuperuser --username octoAdmin --email admin@octoxlabs.com --noinput
 ```
 
 ## API Usage
@@ -69,7 +94,7 @@ A CLI tool is available as a Django management command:
 
 ```bash
 # Using the CLI tool
-docker-compose exec api python manage.py search_cli "Hostname = octoxlabs*" --username octoAdmin
+docker-compose exec api python src/manage.py search_cli "Hostname = octoxlabs*" --username octoAdmin
 ```
 
 ## Security Features
@@ -106,6 +131,7 @@ docker-compose exec api black .
 - Logger Service: 8002
 - RabbitMQ: 5672 (AMQP), 15672 (Management UI)
 - Elasticsearch: 9200
+- Kibana: 5601
 
 ## Development
 
