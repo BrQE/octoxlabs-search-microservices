@@ -14,7 +14,7 @@ class SearchViewTests(TestCase):
         self.auth_token = base64.b64encode(b"octoAdmin").decode("utf-8")
         self.client.credentials(HTTP_AUTHORIZATION=f"Octoxlabs {self.auth_token}")
 
-    @patch("search.views.requests.post")
+    @patch("search.services.requests.post")
     @patch("search.services.Elasticsearch")
     @patch("search.messaging.pika.BlockingConnection")
     def test_search_success(self, mock_pika, mock_es, mock_requests_post):
@@ -86,7 +86,7 @@ class SearchViewTests(TestCase):
         # Assert validation error
         self.assertEqual(response.status_code, 400)
 
-    @patch("search.views.requests.post")
+    @patch("search.services.requests.post")
     @patch("search.services.Elasticsearch")
     @patch("search.messaging.pika.BlockingConnection")
     def test_pagination(self, mock_pika, mock_es, mock_requests_post):
@@ -174,7 +174,7 @@ class SearchViewTests(TestCase):
         )
         self.assertEqual(response.status_code, 400)
 
-    @patch("search.views.requests.post")
+    @patch("search.services.requests.post")
     def test_converter_service_error(self, mock_requests_post):
         # Mock converter service error
         mock_requests_post.side_effect = requests.RequestException(
@@ -188,7 +188,7 @@ class SearchViewTests(TestCase):
         self.assertEqual(response.status_code, 500)
         self.assertIn("error", response.data)
 
-    @patch("search.views.requests.post")
+    @patch("search.services.requests.post")
     @patch("search.services.Elasticsearch")
     def test_elasticsearch_error(self, mock_es, mock_requests_post):
         # Mock converter response
@@ -210,7 +210,7 @@ class SearchViewTests(TestCase):
 
     @patch("search.messaging.pika.BlockingConnection")
     @patch("search.services.Elasticsearch")
-    @patch("search.views.requests.post")
+    @patch("search.services.requests.post")
     def test_rabbitmq_logging_failure(self, mock_requests_post, mock_es, mock_pika):
         # Mock converter response
         mock_response = MagicMock()
