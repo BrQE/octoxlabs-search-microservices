@@ -22,13 +22,13 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-    'rest_framework',
-    'corsheaders',
-    'drf_yasg',
+    "rest_framework",
+    "corsheaders",
+    "drf_yasg",
 ]
 
 LOCAL_APPS = [
-    'search',
+    "search",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -95,29 +95,26 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # REST Framework settings
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'search.authentication.OctoxlabsAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "search.authentication.OctoxlabsAuthentication",
     ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
     ],
-    'DEFAULT_THROTTLE_CLASSES': [
-        'search.throttles.SearchUserRateThrottle',
-        'search.throttles.SearchAnonRateThrottle'
+    "DEFAULT_THROTTLE_CLASSES": [
+        "search.throttles.SearchUserRateThrottle",
+        "search.throttles.SearchAnonRateThrottle",
     ],
-    'DEFAULT_THROTTLE_RATES': {
-        'search_user': '1000/day',
-        'search_anon': '100/day'
-    },
-    'DEFAULT_PAGINATION_CLASS': 'search.pagination.SearchPagination',
-    'PAGE_SIZE': 20
+    "DEFAULT_THROTTLE_RATES": {"search_user": "1000/day", "search_anon": "100/day"},
+    "DEFAULT_PAGINATION_CLASS": "search.pagination.SearchPagination",
+    "PAGE_SIZE": 20,
 }
 
 # Cache settings
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake',
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "unique-snowflake",
     }
 }
 
@@ -126,46 +123,48 @@ CACHE_TTL = 60 * 5
 
 # Logging settings
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
-            'style': '{',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "style": "{",
         },
     },
-    'handlers': {
-        'file': {
-            'level': 'ERROR',
-            'class': 'logging.FileHandler',
-            'filename': BASE_DIR / 'logs/search.log',
-            'formatter': 'verbose',
+    "handlers": {
+        "file": {
+            "level": "ERROR",
+            "class": "logging.FileHandler",
+            "filename": BASE_DIR / "logs/search.log",
+            "formatter": "verbose",
         },
-        'console': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose',
+        "console": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
         },
     },
-    'loggers': {
-        'search': {
-            'handlers': ['file', 'console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-            'propagate': True,
+    "loggers": {
+        "search": {
+            "handlers": ["file", "console"],
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+            "propagate": True,
         },
     },
 }
 
 # Elasticsearch settings
-ELASTICSEARCH_HOST = os.getenv('ELASTICSEARCH_HOST', 'http://localhost:9200')
-ELASTICSEARCH_INDEX = os.getenv('ELASTICSEARCH_INDEX', 'octoxlabsdata')
+ELASTICSEARCH_HOST = os.getenv("ELASTICSEARCH_HOST", "http://localhost:9200")
+ELASTICSEARCH_INDEX = os.getenv("ELASTICSEARCH_INDEX", "octoxlabsdata")
 
 # Query converter service settings
-QUERY_CONVERTER_SERVICE_URL = os.getenv('QUERY_CONVERTER_SERVICE_URL', 'http://localhost:8001/convert')
+QUERY_CONVERTER_SERVICE_URL = os.getenv(
+    "QUERY_CONVERTER_SERVICE_URL", "http://localhost:8001/convert"
+)
 
 # RabbitMQ settings
-RABBITMQ_HOST = os.getenv('RABBITMQ_HOST', 'localhost')
-RABBITMQ_PORT = os.getenv('RABBITMQ_PORT', '5672')
-RABBITMQ_USER = os.getenv('RABBITMQ_USER', 'guest')
-RABBITMQ_PASSWORD = os.getenv('RABBITMQ_PASSWORD', 'guest')
-RABBITMQ_VHOST = os.getenv('RABBITMQ_VHOST', '/') 
+RABBITMQ_HOST = os.getenv("RABBITMQ_HOST", "localhost")
+RABBITMQ_PORT = os.getenv("RABBITMQ_PORT", "5672")
+RABBITMQ_USER = os.getenv("RABBITMQ_USER", "guest")
+RABBITMQ_PASSWORD = os.getenv("RABBITMQ_PASSWORD", "guest")
+RABBITMQ_VHOST = os.getenv("RABBITMQ_VHOST", "/")

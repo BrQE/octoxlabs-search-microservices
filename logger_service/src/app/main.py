@@ -14,6 +14,7 @@ logger.info(f"Environment: {settings.ENVIRONMENT}")
 logger.info(f"Elasticsearch server: {settings.ES_SERVER}")
 logger.info(f"RabbitMQ host: {settings.RABBITMQ_HOST}")
 
+
 @asynccontextmanager
 async def lifespan(app):
     # Startup
@@ -21,17 +22,20 @@ async def lifespan(app):
     transmitter = Transmitter()
     receiver = Receiver(transmitter)
     logger.info("Receiver and Transmitter services initialized")
-    
+
     # Start receiver in a separate thread
     receiver_thread = threading.Thread(target=receiver.start)
-    receiver_thread.daemon = True  # This ensures the thread will be terminated when the main program exits
+    receiver_thread.daemon = (
+        True  # This ensures the thread will be terminated when the main program exits
+    )
     receiver_thread.start()
-    
+
     logger.info("Logger service startup completed")
     yield
     # Shutdown
     receiver.stop()
     logger.info("Shutting down logger service...")
+
 
 es = create_index(settings=settings)
 logger.info("Elasticsearch index created/verified successfully")

@@ -20,12 +20,14 @@ class ElasticsearchClient:
 
             while retry_count < max_retries:
                 try:
-                    logger.info(f"Attempting to connect to Elasticsearch (attempt {retry_count + 1}/{max_retries})...")
+                    logger.info(
+                        f"Attempting to connect to Elasticsearch (attempt {retry_count + 1}/{max_retries})..."
+                    )
                     cls._instance = Elasticsearch(
                         hosts=[settings.ES_SERVER],
                         basic_auth=(settings.ES_USER, settings.ES_PASSWORD),
                         timeout=settings.ES_TIMEOUT,
-                        max_retries=settings.ES_MAX_RETRIES
+                        max_retries=settings.ES_MAX_RETRIES,
                     )
 
                     # Test connection
@@ -39,12 +41,16 @@ class ElasticsearchClient:
                 except (ConnectionError, ConnectionTimeout) as e:
                     retry_count += 1
                     if retry_count < max_retries:
-                        delay = base_delay * (2 ** (retry_count - 1))  # exponential backoff
+                        delay = base_delay * (
+                            2 ** (retry_count - 1)
+                        )  # exponential backoff
                         logger.warning(f"Failed to connect to Elasticsearch: {str(e)}")
                         logger.info(f"Retrying in {delay} seconds...")
                         time.sleep(delay)
                     else:
-                        logger.error(f"Failed to connect to Elasticsearch after {max_retries} attempts")
+                        logger.error(
+                            f"Failed to connect to Elasticsearch after {max_retries} attempts"
+                        )
                         raise
         return cls._instance
 

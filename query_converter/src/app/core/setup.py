@@ -1,24 +1,18 @@
 from typing import Any
- 
+
 import fastapi
 from fastapi import APIRouter, FastAPI
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 from fastapi.openapi.utils import get_openapi
 from loguru import logger
 
-from .config import (
-    AppSettings,
-    EnvironmentOption,
-    EnvironmentSettings
-)
+from .config import AppSettings, EnvironmentOption, EnvironmentSettings
 from .logger import setup_logging
+
 
 def create_application(
     router: APIRouter,
-    settings: (
-        AppSettings   
-        | EnvironmentSettings
-    ),
+    settings: AppSettings | EnvironmentSettings,
     **kwargs: Any,
 ) -> FastAPI:
     """Creates and configures a FastAPI application based on the provided settings.
@@ -68,14 +62,16 @@ def create_application(
 
     if isinstance(settings, EnvironmentSettings):
         kwargs.update({"docs_url": None, "redoc_url": None, "openapi_url": None})
- 
+
     application = FastAPI(**kwargs)
     application.include_router(router)
     logger.info("Router included in application")
 
     if isinstance(settings, EnvironmentSettings):
         if settings.ENVIRONMENT != EnvironmentOption.PRODUCTION:
-            logger.info("Setting up documentation routes for non-production environment")
+            logger.info(
+                "Setting up documentation routes for non-production environment"
+            )
             docs_router = APIRouter()
 
             @docs_router.get("/docs", include_in_schema=False)
@@ -88,7 +84,11 @@ def create_application(
 
             @docs_router.get("/openapi.json", include_in_schema=False)
             async def openapi() -> dict[str, Any]:
-                out: dict = get_openapi(title=application.title, version=application.version, routes=application.routes)
+                out: dict = get_openapi(
+                    title=application.title,
+                    version=application.version,
+                    routes=application.routes,
+                )
                 return out
 
             application.include_router(docs_router)

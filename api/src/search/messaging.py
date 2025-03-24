@@ -4,17 +4,17 @@ from django.conf import settings
 from functools import wraps
 from django.utils import timezone
 
+
 class RabbitMQClient:
     def __init__(self):
         self.credentials = pika.PlainCredentials(
-            settings.RABBITMQ_USER,
-            settings.RABBITMQ_PASSWORD
+            settings.RABBITMQ_USER, settings.RABBITMQ_PASSWORD
         )
         self.parameters = pika.ConnectionParameters(
             host=settings.RABBITMQ_HOST,
             port=int(settings.RABBITMQ_PORT),
             virtual_host=settings.RABBITMQ_VHOST,
-            credentials=self.credentials
+            credentials=self.credentials,
         )
         self.connection = None
         self.channel = None
@@ -23,12 +23,9 @@ class RabbitMQClient:
         if not self.connection or self.connection.is_closed:
             self.connection = pika.BlockingConnection(self.parameters)
             self.channel = self.connection.channel()
-             
+
             # Declare queues
-            self.channel.queue_declare(
-                queue='search_query_queue',
-                durable=True
-            )
+            self.channel.queue_declare(queue="search_query_queue", durable=True)
 
     def close(self):
         if self.connection and not self.connection.is_closed:
@@ -43,34 +40,33 @@ class RabbitMQClient:
                 body=json.dumps(message),
                 properties=pika.BasicProperties(
                     delivery_mode=2,  # make message persistent
-                    content_type='application/json'
-                )
+                    content_type="application/json",
+                ),
             )
         finally:
             self.close()
 
+
 def log_search_query(func):
     """Decorator to log search queries to RabbitMQ"""
+
     @wraps(func)
     def wrapper(view_instance, request, *args, **kwargs):
         client = RabbitMQClient()
-        
+
         # Log the incoming request
         log_data = {
-            'ip': request.META.get('REMOTE_ADDR'),
-            'username': request.user.username,
-            'query': request.data.get('query', ''),
-            'timestamp': str(timezone.now()),
+            "ip": request.META.get("REMOTE_ADDR"),
+            "username": request.user.username,
+            "query": request.data.get("query", ""),
+            "timestamp": str(timezone.now()),
         }
-        
+
         try:
-            client.publish_message(
-                routing_key='search_query_queue',
-                message=log_data
-            )
+            client.publish_message(routing_key="search_query_queue", message=log_data)
         except Exception as e:
             print(f"Failed to log search query: {str(e)}")
-        
+
         return func(view_instance, request, *args, **kwargs)
-    
-    return wrapper 
+
+    return wrapper

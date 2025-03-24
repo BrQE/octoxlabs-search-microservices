@@ -1,1 +1,1 @@
-# Django app initialization 
+# Django app initialization

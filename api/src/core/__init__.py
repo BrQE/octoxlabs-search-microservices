@@ -1,1 +1,1 @@
-# Django package initialization 
+# Django package initialization

@@ -6,7 +6,7 @@ from pika.exceptions import (
     AMQPConnectionError,
     AMQPChannelError,
     ConnectionClosedByBroker,
-    ChannelWrongStateError
+    ChannelWrongStateError,
 )
 from loguru import logger
 
@@ -35,10 +35,12 @@ class Receiver:
                 logger.info("Attempting to start receiver service...")
                 self._connect_to_rabbitmq()
 
-                logger.info(f"Successfully connected to RabbitMQ queue: {settings.RABBITMQ_QUEUE_NAME}")
+                logger.info(
+                    f"Successfully connected to RabbitMQ queue: {settings.RABBITMQ_QUEUE_NAME}"
+                )
                 self.channel.basic_consume(
                     queue=settings.RABBITMQ_QUEUE_NAME,
-                    on_message_callback=self.transmitter.send_to_elasticsearch
+                    on_message_callback=self.transmitter.send_to_elasticsearch,
                 )
                 logger.info("Message consumption started")
 
@@ -117,8 +119,10 @@ class Receiver:
 
         while retry_count < max_retries and not self._should_stop:
             # Add jitter to prevent thundering herd problem
-            delay = base_delay * (2 ** retry_count) + random.uniform(0, 1)
-            logger.info(f"Retrying in {delay:.2f} seconds... (attempt {retry_count + 1}/{max_retries})")
+            delay = base_delay * (2**retry_count) + random.uniform(0, 1)
+            logger.info(
+                f"Retrying in {delay:.2f} seconds... (attempt {retry_count + 1}/{max_retries})"
+            )
             time.sleep(delay)
             retry_count += 1
 
@@ -143,8 +147,7 @@ class Receiver:
         """
         try:
             credentials = pika.PlainCredentials(
-                username=settings.RABBITMQ_USER,
-                password=settings.RABBITMQ_PASSWORD
+                username=settings.RABBITMQ_USER, password=settings.RABBITMQ_PASSWORD
             )
             rabbit_params = pika.ConnectionParameters(
                 host=settings.RABBITMQ_HOST,
@@ -152,7 +155,7 @@ class Receiver:
                 virtual_host=settings.RABBITMQ_VHOST,
                 credentials=credentials,
                 heartbeat=settings.RABBITMQ_HEARTBEAT,
-                blocked_connection_timeout=settings.RABBITMQ_BLOCKED_CONNECTION_TIMEOUT
+                blocked_connection_timeout=settings.RABBITMQ_BLOCKED_CONNECTION_TIMEOUT,
             )
             connection = pika.BlockingConnection(rabbit_params)
             logger.info("Successfully connected to RabbitMQ")
@@ -173,8 +176,15 @@ class Receiver:
             channel.queue_declare(queue=settings.RABBITMQ_QUEUE_NAME, durable=True)
             # Add prefetch to control the number of unacknowledged messages
             channel.basic_qos(
-                prefetch_count=settings.RABBITMQ_PREFETCH_COUNT if hasattr(settings, 'RABBITMQ_PREFETCH_COUNT') else 1)
-            logger.info(f"Successfully created channel and declared queue: {settings.RABBITMQ_QUEUE_NAME}")
+                prefetch_count=(
+                    settings.RABBITMQ_PREFETCH_COUNT
+                    if hasattr(settings, "RABBITMQ_PREFETCH_COUNT")
+                    else 1
+                )
+            )
+            logger.info(
+                f"Successfully created channel and declared queue: {settings.RABBITMQ_QUEUE_NAME}"
+            )
             return channel
         except Exception as e:
             logger.error(f"Failed to create RabbitMQ channel: {str(e)}")

@@ -9,41 +9,25 @@ class TestConverterService:
 
     def test_convert_wildcard_query(self):
         query = "Hostname = octoxlabs*"
-        expected = {
-            QueryType.WILDCARD: {
-                "Hostname": "octoxlabs*"
-            }
-        }
+        expected = {QueryType.WILDCARD: {"Hostname": "octoxlabs*"}}
         result = self.converter.convert_query(query)
         assert result == expected
 
     def test_convert_regex_query(self):
         query = "Hostname = /octoxlabs./"
-        expected = {
-            QueryType.REGEXP: {
-                "Hostname": "octoxlabs."
-            }
-        }
+        expected = {QueryType.REGEXP: {"Hostname": "octoxlabs."}}
         result = self.converter.convert_query(query)
         assert result == expected
 
     def test_convert_term_query(self):
         query = "Hostname = octoxlabs"
-        expected = {
-            QueryType.TERM: {
-                "Hostname": "octoxlabs"
-            }
-        }
+        expected = {QueryType.TERM: {"Hostname": "octoxlabs"}}
         result = self.converter.convert_query(query)
         assert result == expected
 
     def test_convert_query_with_spaces(self):
         query = "Hostname  =  octoxlabs"
-        expected = {
-            QueryType.TERM: {
-                "Hostname": "octoxlabs"
-            }
-        }
+        expected = {QueryType.TERM: {"Hostname": "octoxlabs"}}
         result = self.converter.convert_query(query)
         assert result == expected
 
@@ -73,20 +57,12 @@ class TestConverterService:
 
     def test_query_with_special_characters(self):
         query = "IP = /192\.168\.1\./"
-        expected = {
-            QueryType.REGEXP: {
-                "IP": "192\.168\.1\.*"
-            }
-        }
+        expected = {QueryType.REGEXP: {"IP": "192\.168\.1\.*"}}
         result = self.converter.convert_query(query)
         assert result == expected
 
     def test_query_with_multiple_wildcards(self):
         query = "Domain = *.example.*"
-        expected = {
-            QueryType.WILDCARD: {
-                "Domain": "*.example.*"
-            }
-        }
+        expected = {QueryType.WILDCARD: {"Domain": "*.example.*"}}
         result = self.converter.convert_query(query)
         assert result == expected

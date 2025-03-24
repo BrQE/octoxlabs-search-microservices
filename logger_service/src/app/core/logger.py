@@ -21,30 +21,28 @@ class InterceptHandler(logging.Handler):
             level, record.getMessage()
         )
 
+
 def setup_logging() -> None:
     """Configure logging for the application."""
     # Remove default logger
     logger.remove()
-    
+
     # Add console handler with custom format
     logger.add(
-        sys.stdout,
-        format=settings.LOG_FORMAT,
-        level=settings.LOG_LEVEL,
-        colorize=True
+        sys.stdout, format=settings.LOG_FORMAT, level=settings.LOG_LEVEL, colorize=True
     )
-    
+
     # Add file handler for errors
     logger.add(
         settings.LOG_FILE,
         format=settings.LOG_FORMAT,
         level=settings.LOG_LEVEL,
         rotation=settings.LOG_ROTATION,
-        retention=settings.LOG_RETENTION
+        retention=settings.LOG_RETENTION,
     )
-    
+
     # Intercept standard library logging
     logging.basicConfig(handlers=[InterceptHandler()], level=0, force=True)
-    
+
     # Set loguru logger as the default
-    logging.getLogger().handlers = [InterceptHandler()] 
+    logging.getLogger().handlers = [InterceptHandler()]

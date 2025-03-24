@@ -42,7 +42,7 @@ class ElasticsearchSettings(BaseSettings):
             "ip": {"type": "keyword"},
             "username": {"type": "keyword"},
             "query": {"type": "text"},
-            "timestamp": {"type": "date"}
+            "timestamp": {"type": "date"},
         }
     }
 
@@ -55,7 +55,9 @@ class RabbitMQSettings(BaseSettings):
     RABBITMQ_VHOST: str = config.get("RABBITMQ_VHOST", default="/")
     RABBITMQ_QUEUE_NAME: str = "search_query_queue"
     RABBITMQ_HEARTBEAT: int = config.get("RABBITMQ_HEARTBEAT", default=600)
-    RABBITMQ_BLOCKED_CONNECTION_TIMEOUT: int = config.get("RABBITMQ_BLOCKED_CONNECTION_TIMEOUT", default=300)
+    RABBITMQ_BLOCKED_CONNECTION_TIMEOUT: int = config.get(
+        "RABBITMQ_BLOCKED_CONNECTION_TIMEOUT", default=300
+    )
 
 
 class EnvironmentOption(Enum):
@@ -73,7 +75,7 @@ class Settings(
     LoggingSettings,
     EnvironmentSettings,
     ElasticsearchSettings,
-    RabbitMQSettings
+    RabbitMQSettings,
 ):
     pass
 

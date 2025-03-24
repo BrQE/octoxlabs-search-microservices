@@ -1,1 +1,1 @@
-# Django management commands initialization 
+# Django management commands initialization

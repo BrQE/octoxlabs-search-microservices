@@ -18,6 +18,7 @@ from .messaging import log_search_query
 
 logger = logging.getLogger(__name__)
 
+
 class SearchView(APIView):
     pagination_class = SearchPagination
     throttle_classes = [SearchUserRateThrottle, SearchAnonRateThrottle]
@@ -34,24 +35,24 @@ class SearchView(APIView):
             400: "Bad Request",
             429: "Too Many Requests",
             500: "Internal Server Error",
-            503: "Service Unavailable"
+            503: "Service Unavailable",
         },
         operation_description="Search for hosts using a query string",
         operation_summary="Search hosts",
         manual_parameters=[
             openapi.Parameter(
-                'page', 
+                "page",
                 openapi.IN_QUERY,
                 description="Page number",
-                type=openapi.TYPE_INTEGER
+                type=openapi.TYPE_INTEGER,
             ),
             openapi.Parameter(
-                'page_size',
+                "page_size",
                 openapi.IN_QUERY,
                 description="Number of results per page",
-                type=openapi.TYPE_INTEGER
-            )
-        ]
+                type=openapi.TYPE_INTEGER,
+            ),
+        ],
     )
     @method_decorator(cache_page(60 * 5))  # Cache for 5 minutes
     @log_search_query
@@ -62,11 +63,11 @@ class SearchView(APIView):
             if not serializer.is_valid():
                 return Response(
                     {"error": "Invalid input", "details": serializer.errors},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
 
             # Execute search
-            query = serializer.validated_data['query']
+            query = serializer.validated_data["query"]
             results = self.search_service.search(query)
 
             # Serialize results
@@ -75,21 +76,18 @@ class SearchView(APIView):
                 logger.error(f"Invalid search results: {result_serializer.errors}")
                 return Response(
                     {"error": "Invalid search results"},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 )
 
             # Paginate results
             page = self.pagination.paginate_queryset(result_serializer.data, request)
             if page is not None:
-                response_data = {
-                    'total': len(result_serializer.data),
-                    'results': page
-                }
+                response_data = {"total": len(result_serializer.data), "results": page}
                 return Response(response_data)
 
             response_data = {
-                'total': len(result_serializer.data),
-                'results': result_serializer.data
+                "total": len(result_serializer.data),
+                "results": result_serializer.data,
             }
             return Response(response_data)
 
@@ -97,6 +95,5 @@ class SearchView(APIView):
             logger.error(f"Search failed: {str(e)}", exc_info=True)
             return Response(
                 {"error": "Search failed", "details": str(e)},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
-    
