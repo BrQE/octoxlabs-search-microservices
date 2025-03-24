@@ -54,6 +54,9 @@ docker-compose up -d
 echo "Waiting for services to be ready..."
 wait_for_services
 
+echo "Creating superuser..."
+docker-compose exec api python src/manage.py createsuperuser --username octoAdmin --email admin@octoxlabs.com --noinput
+
 echo "Testing search endpoint..."
 curl -X POST \
   'http://localhost:8000/search/?page=1&page_size=10' \
