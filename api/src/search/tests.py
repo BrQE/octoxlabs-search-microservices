@@ -1,5 +1,4 @@
 import base64
-import json
 from unittest.mock import patch, MagicMock
 from django.test import TestCase
 from django.urls import reverse
