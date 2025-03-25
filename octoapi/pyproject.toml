@@ -1,5 +1,5 @@
 [project]
-name = "octoxlabs-search-api"
+name = "octoapi"
 version = "1.0.0"
 description = "Octoxlabs Search API Case Study"
 authors = [
@@ -20,7 +20,7 @@ dependencies = [
 ]
 
 [tool.poetry]
-name = "octoxlabs-search-api"
+name = "octoapi"
 version = "1.0.0"
 description = "Octoxlabs Search API Case Study"
 authors = ["Burak Ece <burakece9191@hotmail.com>"]
