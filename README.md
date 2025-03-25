@@ -29,9 +29,6 @@ You can run the project in two ways:
 git clone https://github.com/BrQE/octoxlabs-search-microservices
 cd octoxlabs-search-microservices
 
-# Make the script executable
-chmod +x dev_run.sh
-
 # Run the development script
 ./dev_run.sh
 ```
@@ -57,7 +54,7 @@ docker-compose up -d
 sleep 30
 
 # Create test user
-docker-compose exec api python src/manage.py createsuperuser --username octoAdmin --email admin@octoxlabs.com --noinput
+docker-compose exec octoapi python src/manage.py createsuperuser --username octoAdmin --email admin@octoxlabs.com --noinput
 ```
 
 ## API Usage
@@ -94,7 +91,7 @@ A CLI tool is available as a Django management command:
 
 ```bash
 # Using the CLI tool
-docker-compose exec api python src/manage.py search_cli "Hostname = octoxlabs*" --username octoAdmin
+docker-compose exec octoapi python src/manage.py search_cli "Hostname = octoxlabs*" --username octoAdmin
 ```
 
 ## Security Features
@@ -109,7 +106,7 @@ docker-compose exec api python src/manage.py search_cli "Hostname = octoxlabs*" 
 To run unit tests:
 
 ```bash
-docker-compose exec api pytest src/search/tests.py -v
+docker-compose exec octoapi pytest src/search/tests.py -v
 ```
 
 ## Code Quality
@@ -118,10 +115,10 @@ Code quality tools (flake8, black) are integrated:
 
 ```bash
 # Check code style
-docker-compose exec api flake8
+docker-compose exec octoapi flake8
 
 # Format code
-docker-compose exec api black .
+docker-compose exec octoapi black .
 ```
 
 ## Service Ports
@@ -142,11 +139,3 @@ The project uses a microservices architecture with the following key components:
 - **Logger Service**: Records search queries and results
 - **Message Queue**: Manages asynchronous communication between services
 - **Search Engine**: Provides efficient data storage and retrieval
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a new Pull Request

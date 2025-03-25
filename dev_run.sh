@@ -2,7 +2,7 @@
 
 # Function to check and create .env files
 setup_env_files() {
-    local service_dirs=("api" "logger_service" "query_converter")
+    local service_dirs=("octoapi" "logger_service" "query_converter")
     
     for dir in "${service_dirs[@]}"; do
         if [ ! -f "$dir/.env" ] && [ -f "$dir/.env.example" ]; then
@@ -55,7 +55,7 @@ echo "Waiting for services to be ready..."
 wait_for_services
 
 echo "Creating superuser..."
-docker-compose exec api python src/manage.py createsuperuser --username octoAdmin --email admin@octoxlabs.com --noinput
+docker-compose exec octoapi python src/manage.py createsuperuser --username octoAdmin --email admin@octoxlabs.com --noinput
 
 echo "Testing search endpoint..."
 curl -X POST \

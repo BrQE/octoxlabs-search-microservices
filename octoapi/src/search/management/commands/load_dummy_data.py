@@ -65,7 +65,7 @@ class Command(BaseCommand):
             # Show sample query
             self.stdout.write("\nSample query to test:")
             self.stdout.write(
-                "curl -X POST http://localhost:8000/api/search/ "
+                "curl -X POST http://localhost:8000/search/ "
                 '-H "Authorization: Octoxlabs b2N0b0FkbWlu" '
                 '-H "Content-Type: application/json" '
                 '-d \'{"query": "Hostname = octoxlabs*"}\''

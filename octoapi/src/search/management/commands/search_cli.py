@@ -37,11 +37,13 @@ class Command(BaseCommand):
         # Make request to API
         try:
             response = requests.post(
-                "http://api:8000/search/",
+                "http://octoapi:8000/search/",
                 json={"query": query},
                 params={"page": page, "page_size": page_size},
                 headers={"Authorization": auth_token},
             )
+
+            print(response.json())
 
             if response.status_code == 200:
                 data = response.json()
